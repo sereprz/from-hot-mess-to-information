@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>From Hot Mess to Information</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+couner: false
+
+# From hot mess to Information
+.example[
+### or why you should spend more time processing your data
+]
+<br><br><br>
+
+Serena Peruzzo 
+
+Senior Data Scientist @ Bardess Group
+
+---
+
+class: middle, center
+
+.red[
+# Warning
+]
+
+## This talk is not about fancy algorithms
+
+---
+class: center, middle
+
+![](img/piechart.png)
+.footnote[.right[2016 Data Science Report ![](img/crowdflower_logo.png)]]
+
+---
+class: center, middle
+
+![](img/headline2.png)
+
+![](img/headline1.png)
+
+![](img/headline3.png)
+
+---
+
+class: middle
+
+.left[![](img/quotation-left.png)] 80 percent of a data scientist’s valuable time is spent simply finding, cleansing, and organizing data, leaving only 20 percent to actually perform analysis .right[![](img/quotation-right.png)]
+.right[IBM Data Analytics]
+
+---
+
+
+class: middle
+
+# Two Missions
+
+--
+
+### 1. None of this is easy or trivial
+--
+
+### 2. Some of the stats used is actually pretty interesting
+
+---
+class: middle
+
+# Data Science Workflow
+
+![](img/ds-workflow.png)
+
+<!-- .footnote[.right[_https://houseofbots.com/news-detail/3320-Streamlining-the-Data-Scientists-Workflow_]] -->
+
+---
+
+class: top
+
+# Garbage in, Garbage out
+* Machine Learning models are not smart per se
+
+* Simple algorithms can outperform more complex ones if trained on enough high quality data
+
+* Incorrect, inconsistent, biased data leads to wrong conclusions
+
+* The implications are serious
+
+.right[![](img/gigo.png)]
+
+<!-- ---
+
+class: middle
+
+# Data Cleaning and Pre-processing
+
+* From messy data to tidy data
+
+* From tidy data to clean data
+
+* Process and best practices -->
+---
+class: middle
+
+# Step 1: from messy data to tidy data
+
+Tidy data is a standard way of mapping a dataset to its structure:
+* Each variable/feature forms a column
+* Each observation forms a row
+* Each type of observational unit forms a table
+
+---
+
+class: middle
+
+# Step 2: from tidy data to clean data
+
+--
+
+### What is data Quality?
+
+--
+
+[Wikipedia](https://en.wikipedia.org/wiki/Data_quality) general definition:
+
+* it's fit for its intended use
+* it correctly represents the reality to which it refers
+
+--
+
+State of completeness, consistency, timeliness, duplication and accuracy that makes data appropriate for a specific use
+
+  <!--  https://iso25000.com/index.php/en/iso-25000-standards/iso-25012
+  * ISO 25012 criteria: Accuracy, Completeness, Consistency, Credibility, Currentness, Accessibility, Compliance, Confidenciality, Efficiency, Precision, Traceability, Understandability, Availability, Portability, Recoverability
+ -->
+---
+
+class: middle
+
+# Data Cleaning and Wrangling
+
+* Spotting inconsistencies
+
+* Outliers
+
+* Missing Data
+
+* Process and best practices
+
+---
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+]
+
+.right-column[
+* Irrelevant data (columns, rows)
+
+* Duplicates
+
+* Type conversions
+
+* Syntax errors (white spaces, typos)
+
+* Non standard missing values (_N/A, Null, Not Applicable_)
+]
+
+---
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+
+### Outliers
+]
+
+.right-column[
+
+No rigorous mathematical definition
+
+A data point that differs significantly from the other observations
+
+Causes:
+* Variability
+
+* Errors
+]
+
+---
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+
+### Outliers
+]
+
+.right-column[
+### Tuckey's fences (Boxplot rule)
+
+Flag observations based on the interquartile range:
+
+* `Q1` and `Q3` respectively the 1st and 3rd quartiles of the distribution
+
+* The interquartile range is `IQR = Q3 - Q1`
+
+* Any observation outside the range <br>`[Q1 - k (IQR), Q3 + k(IQR)]`
+
+* traditionally `k=1.5`, or `k=3` for _extreme outliers_
+
+]
+
+
+---
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+
+### Outliers
+]
+
+.right-column[
+### Local Outlier Factor
+
+* Locality given by the `k` nearest neighbors of a data point
+
+* Comparison between the local densities of a data point with the local densisties of its neighbors
+
+* Points with substantially lower density than their neighbors may be identified as outliers
+]
+
+---
+
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+
+### Outliers
+
+### Missing Data
+]
+
+.right-column[
+
+Missing data are data points for which the type is known but not the values, e.g. an unanswered questions in a survey
+
+<!-- Mechanisms for missing data: -->
+
+* Missing Completely At Random (`MCAR`): the reasons for a value being missing are independent of any observable or non observable variable
+
+* Missing At Random (`MAR`): missingness is not random but can be fully explained by some variable for which the information available is complete
+<br>e.g. .example[_men are less likely to fill in surveys on mental health for no other reason then being men_]
+
+* Missing Not At Random (`MNAR`): missingness is due to unknown factors <br>e.g. .example[_men are less likely to fill in surveys on mental health because of mental health somehow_]
+]
+
+---
+
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+
+### Outliers
+
+### Missing Data
+]
+
+.right-column[
+### Deletion
+
+* Large number of missing values in a column values are missing
+
+* Few missing values and **not** at random
+
+### Imputation
+
+* **Numerical** imputation: replace all missing observations with a single value, usually the mean
+
+* **Random selection** from the distribution
+
+* **Hot deck** imputation: missing values are imputed from similar records in the dataset
+
+* **KNN** imputation: determine the the nearest neighbors and use some aggregate of their values to impute the missing one
+
+]
+
+---
+
+
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+
+### Outliers
+
+### Missing Data
+
+### Process and best practices
+]
+
+.right-column[
+
+**Inspection**
+
+Detect unexpected, incorrect, and inconsistent data (Data profiling and Visualization)
+
+**Cleaning**
+
+Remove, Correct or Impute incorrect data
+
+**Verifying**
+
+Is the data correct now? Re-inspect and test to verify no assumptions are violated
+
+**Reporting**
+
+Keep a log of the inconsistencies and errors found and how they were addressed
+
+Make sure every step is documented and reproducible
+
+Avoid manual edits!
+
+]
+
+---
+
+class: middle
+
+# Epilogue
+
+* This is not an exhaustive guide to pre-processing
+
+* Many decision steps and possible failure points
+
+* This stuff ain't easy
+
+* It's important that models are trained on data that is reliable, consistent and unbiased
+
+---
+
+class: bottom, right
+
+# Thank you
+
+    </textarea>
+    <script src="js/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create({countIncrementalSlides: false});
+    </script>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+@import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+@import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+@import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+body {
+    font-family: 'Droid Serif';
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'Yanone Kaffeesatz';
+    font-weight: normal;
+}
+
+.footnote {
+    font-size: 12px;
+}
+
+.example {
+    font-size: 16pxl;
+    color: #777872
+}
+
+.red h1 {
+    color: red;
+}
+
+.inverse {
+    background: #272822;
+    color: #777872;
+    text-shadow: 0 0 20px #333;
+}
+
+.inverse h1,
+.inverse h2,
+.inverse h3 {
+    color: #f3f3f3;
+}
+
+.left-column h3:last-of-type,
+.left-column h2:last-of-type {
+    color: black
+}
+
+.left-column h3,
+.left-column h2 {
+    color: #777872
+}
+
+/* Two-column layouts */
+.left-column {
+    width: 20%;
+    float: left;
+}
+
+.right-column {
+    width: 75%;
+    float: right;
+}
+
+.left-column-50 {
+    width: 50%;
+    float: left;
+}
+
+.right-column-50 {
+    width: 55%;
+    float: right;
+}
+
+.right-column~p {
+    clear: both;
+}
+
+.right-column~ul {
+    clear: both;
+}
+
+.remark-code,
+.remark-inline-code {
+    font-family: 'Ubuntu Mono';
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
