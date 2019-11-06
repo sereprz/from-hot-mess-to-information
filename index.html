@@ -9,7 +9,7 @@
     <textarea id="source">
 
 class: center, middle
-couner: false
+counter: false
 
 # From hot mess to Information
 .example[
@@ -17,7 +17,7 @@ couner: false
 ]
 <br><br><br>
 
-Serena Peruzzo 
+### Serena Peruzzo 
 
 Senior Data Scientist @ Bardess Group
 
@@ -25,17 +25,27 @@ Senior Data Scientist @ Bardess Group
 
 class: middle, center
 
+# Data Science Workflow
+
+![](img/ds-workflow.png)
+
+.footnote[.right[_https://houseofbots.com/news-detail/3320-Streamlining-the-Data-Scientists-Workflow_]]
+
+<!-- ---
+
+class: middle, center
+
 .red[
 # Warning
 ]
 
-## This talk is not about fancy algorithms
+## This talk is not about fancy algorithms -->
 
 ---
 class: center, middle
 
 ![](img/piechart.png)
-.footnote[.right[2016 Data Science Report ![](img/crowdflower_logo.png)]]
+.footnote[.right[[2016 Data Science Report](https://visit.figure-eight.com/data-science-report.html) ![](img/crowdflower_logo.png)]]
 
 ---
 class: center, middle
@@ -46,12 +56,12 @@ class: center, middle
 
 ![](img/headline3.png)
 
----
+<!-- ---
 
-class: middle
+class: middle, center
 
 .left[![](img/quotation-left.png)] 80 percent of a data scientist’s valuable time is spent simply finding, cleansing, and organizing data, leaving only 20 percent to actually perform analysis .right[![](img/quotation-right.png)]
-.right[IBM Data Analytics]
+.right[IBM Data Analytics] -->
 
 ---
 
@@ -59,21 +69,11 @@ class: middle
 
 # Two Missions
 
---
-
 ### 1. None of this is easy or trivial
---
 
-### 2. Some of the stats used is actually pretty interesting
+### 2. Adds value to the project
 
----
-class: middle
-
-# Data Science Workflow
-
-![](img/ds-workflow.png)
-
-<!-- .footnote[.right[_https://houseofbots.com/news-detail/3320-Streamlining-the-Data-Scientists-Workflow_]] -->
+<!-- ### 3. Some of the stats used is actually pretty interesting -->
 
 ---
 
@@ -90,17 +90,18 @@ class: top
 
 .right[![](img/gigo.png)]
 
-<!-- ---
+---
 
 class: middle
 
-# Data Cleaning and Pre-processing
+# Mental Health in Tech Survey (2014)
 
-* From messy data to tidy data
+Measures attitudes towards mental health and frequency of mental health disorders in the tech workplace.
 
-* From tidy data to clean data
+![](img/df-head.png)
+Answers to 25 questions from 1259 respondents.
 
-* Process and best practices -->
+.footnote[.right[https://www.kaggle.com/osmi/mental-health-in-tech-survey/]]
 ---
 class: middle
 
@@ -111,17 +112,16 @@ Tidy data is a standard way of mapping a dataset to its structure:
 * Each observation forms a row
 * Each type of observational unit forms a table
 
+![](img/from-messy-to-tidy.png)
+
+.footnote[.right[http://vita.had.co.nz/papers/tidy-data.pdf]]
 ---
 
 class: middle
 
 # Step 2: from tidy data to clean data
 
---
-
-### What is data Quality?
-
---
+### What is data quality?
 
 [Wikipedia](https://en.wikipedia.org/wiki/Data_quality) general definition:
 
@@ -169,6 +169,77 @@ class: middle
 ]
 
 ---
+
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+]
+
+.right-column[
+
+```python
+df['Age'].describe().transpose()
+```
+
+```markdown
+count          1259.000
+mean       79428148.311
+std      2818299442.982
+min           -1726.000
+25%              27.000
+50%              31.000
+75%              36.000
+max     99999999999.000
+Name: Age, dtype: float64
+```
+
+```python
+df.loc[(df.Age < 0) | (df.Age > 100), 'Age'] = np.NaN
+df['Age'].describe().transpose()
+```
+```markdown
+count   1254.000
+mean      32.019
+std        7.375
+min        5.000
+25%       27.000
+50%       31.000
+75%       36.000
+max       72.000
+Name: Age, dtype: float64
+```
+]
+
+---
+
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+]
+
+.right-column[
+```python
+df['Gender'].value_counts()
+```
+```markdown
+Male                                              615
+male                                              206
+Female                                            121
+M                                                 116
+female                                             62
+                                                 ... 
+cis male                                            1
+Neuter                                              1
+Androgyne                                           1
+ostensibly male, unsure what that really means      1
+maile                                               1
+Name: Gender, Length: 49, dtype: int64
+```
+]
+
+---
 class: middle
 
 .left-column[
@@ -199,17 +270,15 @@ class: middle
 ]
 
 .right-column[
+.center[
 ### Tuckey's fences (Boxplot rule)
+]
 
-Flag observations based on the interquartile range:
+![](img/boxplot.png)
 
-* `Q1` and `Q3` respectively the 1st and 3rd quartiles of the distribution
+.center[`[Q1 - k (IQR), Q3 + k(IQR)]`
 
-* The interquartile range is `IQR = Q3 - Q1`
-
-* Any observation outside the range <br>`[Q1 - k (IQR), Q3 + k(IQR)]`
-
-* traditionally `k=1.5`, or `k=3` for _extreme outliers_
+Traditionally `k=1.5`, or `k=3` for _extreme outliers_]
 
 ]
 
@@ -251,12 +320,17 @@ Missing data are data points for which the type is known but not the values, e.g
 
 <!-- Mechanisms for missing data: -->
 
-* Missing Completely At Random (`MCAR`): the reasons for a value being missing are independent of any observable or non observable variable
+* Missing Completely At Random (`MCAR`):
+<br>.example[some people don't fill in surveys on mental health]
+<!-- the reasons for a value being missing are independent of any observable or non observable variable -->
 
-* Missing At Random (`MAR`): missingness is not random but can be fully explained by some variable for which the information available is complete
-<br>e.g. .example[_men are less likely to fill in surveys on mental health for no other reason then being men_]
+* Missing At Random (`MAR`): 
+<!-- missingness is not random but can be fully explained by some variable for which the information available is complete -->
+<br>.example[_men are less likely to fill in surveys on mental health for no other reason then being men_]
 
-* Missing Not At Random (`MNAR`): missingness is due to unknown factors <br>e.g. .example[_men are less likely to fill in surveys on mental health because of mental health somehow_]
+* Missing Not At Random (`MNAR`): 
+<!-- missingness is due to unknown factors -->
+<br>.example[_men are less likely to fill in surveys on mental health because of mental health somehow_]
 ]
 
 ---
@@ -275,17 +349,13 @@ class: middle
 ### Deletion
 
 * Large number of missing values in a column values are missing
-
 * Few missing values and **not** at random
 
 ### Imputation
 
 * **Numerical** imputation: replace all missing observations with a single value, usually the mean
-
 * **Random selection** from the distribution
-
 * **Hot deck** imputation: missing values are imputed from similar records in the dataset
-
 * **KNN** imputation: determine the the nearest neighbors and use some aggregate of their values to impute the missing one
 
 ]
@@ -307,20 +377,16 @@ class: middle
 
 .right-column[
 
-**Inspection**
-
+**Inspection**<br>
 Detect unexpected, incorrect, and inconsistent data (Data profiling and Visualization)
 
-**Cleaning**
-
+**Cleaning**<br>
 Remove, Correct or Impute incorrect data
 
-**Verifying**
-
+**Verifying**<br>
 Is the data correct now? Re-inspect and test to verify no assumptions are violated
 
-**Reporting**
-
+**Reporting**<br>
 Keep a log of the inconsistencies and errors found and how they were addressed
 
 Make sure every step is documented and reproducible
@@ -345,9 +411,17 @@ class: middle
 
 ---
 
-class: bottom, right
+class: center, middle
 
-# Thank you
+## slides at https://github.com/sereprz/from-hot-mess-to-information
+
+---
+
+<!-- class: bottom, right -->
+class: center, middle
+
+# Thank you!
+### [@sereprz](https://twitter.com/sereprz)
 
     </textarea>
     <script src="js/remark-latest.min.js">
