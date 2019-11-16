@@ -94,15 +94,18 @@ class: top
 
 class: middle
 
-# Mental Health in Tech Survey (2014)
+# Agenda
 
-Measures attitudes towards mental health and frequency of mental health disorders in the tech workplace.
+* ### From messy data to tidy data
 
-![](img/df-head.png)
-Answers to 25 questions from 1259 respondents.
+* ### From tidy data to clean data:
+  * ### Spotting inconsistencies
+  * ### Outliers
+  * ### Missing data
+* ### Process and best practices
 
-.footnote[.right[https://www.kaggle.com/osmi/mental-health-in-tech-survey/]]
 ---
+
 class: middle
 
 # Step 1: from messy data to tidy data
@@ -135,7 +138,8 @@ State of completeness, consistency, timeliness, duplication and accuracy that ma
   <!--  https://iso25000.com/index.php/en/iso-25000-standards/iso-25012
   * ISO 25012 criteria: Accuracy, Completeness, Consistency, Credibility, Currentness, Accessibility, Compliance, Confidenciality, Efficiency, Precision, Traceability, Understandability, Availability, Portability, Recoverability
  -->
----
+
+<!-- ---
 
 class: middle
 
@@ -145,7 +149,20 @@ class: middle
 
 * Outliers
 
-* Missing Data
+* Missing Data -->
+
+---
+
+class: middle
+
+# Mental Health in Tech Survey (2014)
+
+Measures attitudes towards mental health and frequency of mental health disorders in the tech workplace.
+
+![](img/df-head.png)
+Answers to 25 questions from 1259 respondents.
+
+.footnote[.right[https://www.kaggle.com/osmi/mental-health-in-tech-survey/]]
 
 ---
 class: middle
@@ -176,8 +193,10 @@ class: middle
 
 .right-column[
 
+![](img/hist_before.png)
+
 ```python
-df['Age'].describe().transpose()
+df['Age'].describe()
 ```
 
 ```markdown
@@ -192,20 +211,37 @@ max     99999999999.000
 Name: Age, dtype: float64
 ```
 
+]
+
+---
+
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+]
+
+.right-column[
+
 ```python
-df.loc[(df.Age < 0) | (df.Age > 100), 'Age'] = np.NaN
-df['Age'].describe().transpose()
+min_max_age = (df['Age'] < 14) | (df['Age'] > 100)
+df.loc[min_max_age, 'age_clean'] = np.NaN
+```
+![](img/hist_after.png)
+
+```python
+df['age_clean'].describe()
 ```
 ```markdown
-count   1254.000
-mean      32.019
-std        7.375
-min        5.000
+count   1251.000
+mean      32.077
+std        7.288
+min       18.000
 25%       27.000
 50%       31.000
 75%       36.000
 max       72.000
-Name: Age, dtype: float64
+Name: age_clean, dtype: float64
 ```
 ]
 
@@ -218,9 +254,9 @@ class: middle
 ]
 
 .right-column[
-```python
-df['Gender'].value_counts()
-```
+
+![](img/barchart_before.png)
+
 ```markdown
 Male                                              615
 male                                              206
@@ -238,6 +274,51 @@ Name: Gender, Length: 49, dtype: int64
 ]
 
 ---
+
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+]
+
+.right-column[
+
+```python
+def clean_gender(s):
+
+    if re.findall('female|woman', s, re.IGNORECASE)
+      or s.lower()[0] == 'f':
+        return 'woman'
+    elif re.findall('male|man', s, re.IGNORECASE)
+      or s.lower()[0] == 'm':
+        return 'man'
+    else:
+        if 'queer' in s.lower()
+          or 'binary' in s.lower()
+          or 'agender' in s.lower():
+            return 'non-binary'
+        else:
+            return s
+```
+
+![](img/barchart_after.png)
+
+]
+
+---
+
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+]
+
+.right-column[
+![](img/country.png)
+]
+
+---
+
 class: middle
 
 .left-column[
@@ -359,7 +440,105 @@ class: middle
 ]
 
 ---
+class: middle
 
+.left-column[
+### Spotting inconsistencies
+
+### Outliers
+
+### Missing Data
+]
+
+.right-column[
+```python
+df['self_employed'].isnull().sum()
+```
+```markdown
+15
+```
+.center[
+![](img/missing_before.png)]
+
+```python
+np.random.seed(7)
+np.random.choice(
+    self_employed['answer'],
+    size=df['self_employed'].isnull().sum(),
+    replace=True,
+    p=self_employed['p']
+)
+```
+.center[
+![](img/missing_after.png)]
+
+]
+---
+
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+
+### Outliers
+
+### Missing Data
+]
+
+.right-column[
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.decomposition import PCA
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.preprocessing import OneHotEncoder, Normalizer
+```
+```python
+features = ['gender_clean', 'state_imputed', 'se_imputed',
+            'no_employees']
+target = ['age_clean']
+
+enc = OneHotEncoder(handle_unknown='ignore', sparse=False)
+
+norm = Normalizer()
+
+pca = PCA(n_components=5)
+
+knn = KNeighborsRegressor(n_neighbors=5)
+
+model = Pipeline(
+    [('encoder', enc),
+     ('normalizare', norm),
+     ('pca', pca),
+     ('knn', knn)]
+  )
+
+model.fit(
+  df[df['age_clean'].notnull()][features],
+  df[df['age_clean'].notnull()][target])
+
+df.loc[df['age_clean'].isnull(), 'age_clean'] = 
+  model.predict(df[df['age_clean'].isnull()][features])
+```
+]
+---
+
+class: middle
+
+.left-column[
+### Spotting inconsistencies
+
+### Outliers
+
+### Missing Data
+]
+
+.right-column[
+
+![](img/hist_pre_imputation.png)
+
+![](img/hist_post_imputation.png)
+]
+---
 
 class: middle
 
@@ -385,13 +564,21 @@ Avoid manual edits!
 
 class: middle
 
-# Epilogue
+# Process and best practices
+
+![](img/preprocessing-flow.png)
+
+---
+
+class: middle
+
+# Summary
 
 * This is not an exhaustive guide to pre-processing
 
 * Many decision steps and possible failure points
 
-* This stuff ain't easy
+* Gain better understanding of the data and the problem at hand
 
 * It's important that models are trained on data that is reliable, consistent and unbiased
 
@@ -414,7 +601,14 @@ class: center, middle
     <script src="js/remark-latest.min.js">
     </script>
     <script>
-      var slideshow = remark.create({countIncrementalSlides: false});
+      var slideshow = remark.create({
+        // .. or by using a format function
+        slideNumberFormat: function (current, total) {
+        return '';
+        },
+        countIncrementalSlides: false,
+        highlightStyle: 'tomorrow-night-blue'
+      });
     </script>
   </body>
 </html>

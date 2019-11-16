@@ -247,6 +247,10 @@ h3 {
   font-weight: normal;
 }
 
+.code-small {
+  font-size: 10px
+}
+
 .footnote {
   font-size: 12px;
 }
